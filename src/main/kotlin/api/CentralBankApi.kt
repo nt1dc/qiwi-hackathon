@@ -10,17 +10,15 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 class CentralBankApi {
-    fun loadValCurs(date: Date): ValCurs? {
+    fun loadValCurs(date: Date): ValCurs {
         val serializer = Persister()
         val fetchXmlData = fetchXmlData(date)
-        println(fetchXmlData)
         return serializer.read(ValCurs::class.java, fetchXmlData)
     }
 
     private fun fetchXmlData(date: Date): String {
         val baseUrl = "https://www.cbr.ru/scripts/XML_daily.asp?date_req="
         val apiDate = myFormat.format(date)
-        println(baseUrl + date)
         val connection = URL(baseUrl + apiDate).openConnection() as HttpURLConnection
         connection.requestMethod = "GET"
         connection.connect()
