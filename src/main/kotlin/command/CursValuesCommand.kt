@@ -1,19 +1,22 @@
 package command
 
-import api.ValCurs
+import api.CentralBankApi
 import exception.ValuteNotFoundException
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.*
 
-class CursValuesCommand(command: Command) : Command(command.name, command.argsMap), Executable {
+class CursValuesCommand(name: String, argsMap: Map<String, String>) : Command(name, argsMap) {
     val date: Date = SimpleDateFormat("yyyy-MM-dd")
-        .parse(argsMap["date"]?:throw IllegalArgumentException("--date not present"))
-    val code: String = argsMap["code"]?:throw IllegalArgumentException("--code not present")
+        .parse(argsMap["date"] ?: throw IllegalArgumentException("--date not present"))
+    val code: String = argsMap["code"] ?: throw IllegalArgumentException("--code not present")
 
 
-    override fun execute(valuteCurs: ValCurs) {
+    override fun execute(){
+        val centralBankApi = CentralBankApi.getInstance()
+        val valuteCurs = centralBankApi.loadValCurs(this.date)
         val valute = valuteCurs.valutes.find { it.charCode == code }
             ?: throw ValuteNotFoundException("valute $code not found")
-        println("${valute.charCode} (${valute.name}): ${valute.value}")
+        val resString = "${valute.charCode} (${valute.name}): ${valute.value}"
+        println(resString)
     }
 }

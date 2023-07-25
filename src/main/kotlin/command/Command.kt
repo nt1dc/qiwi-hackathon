@@ -1,6 +1,8 @@
 package command
 
-open class Command(
+abstract class Command(
     val name: String,
     val argsMap: Map<String, String>,
-)
+){
+    abstract fun execute()
+}

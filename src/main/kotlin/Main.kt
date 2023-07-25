@@ -1,19 +1,23 @@
-import api.CentralBankApi
 import command.CommandService
-import command.CursValuesCommand
+import java.lang.Exception
 import java.util.*
 
 
 fun main() {
-    val centralBankApi = CentralBankApi()
+
     val commandService = CommandService()
     val scanner = Scanner(System.`in`)
+    while (true) {
+        try {
+            val nextLine = scanner.nextLine()
+            if (nextLine == "exit") return
+            val extractCommand = commandService.extractCommand(nextLine)
+            commandService.executeCommand(extractCommand)
+        } catch (e: Exception) {
+            System.err.println(e.message)
+        }
 
-    val nextLine = scanner.nextLine()
-    val extractCommand = commandService.extractCommand(nextLine)
-    val cursValuesCommand = CursValuesCommand(extractCommand)
-    val loadValCurs = centralBankApi.loadValCurs(cursValuesCommand.date)
-    cursValuesCommand.execute(loadValCurs)
+    }
 }
 
 

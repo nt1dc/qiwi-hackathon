@@ -11,7 +11,12 @@ class CommandService {
             val argVal = arg[1]
             argName to argVal
         }.toList().associate { it.first to it.second }
-        return Command(commandName, argsMap)
+        if (commandName == "currency_rates") return CursValuesCommand(commandName, argsMap)
+        throw IllegalArgumentException("unknown command")
+    }
+
+    fun executeCommand(executable: Command) {
+        executable.execute()
     }
 
 }

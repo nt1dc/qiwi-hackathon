@@ -9,7 +9,7 @@ import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class CentralBankApi {
+class CentralBankApi private constructor() {
     private var myFormat = SimpleDateFormat("dd/MM/yyyy")
 
     private val cache: Map<Date, ValCurs> = mutableMapOf()
@@ -43,6 +43,22 @@ class CentralBankApi {
             response.toString()
         } else {
             throw DataFetchingException()
+        }
+    }
+
+    companion object {
+        @Volatile
+        private var instance: CentralBankApi? = null
+
+        fun getInstance(): CentralBankApi {
+            if (instance == null) {
+                synchronized(this) {
+                    if (instance == null) {
+                        instance = CentralBankApi()
+                    }
+                }
+            }
+            return instance!!
         }
     }
 
