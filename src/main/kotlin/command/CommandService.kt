@@ -2,12 +2,16 @@ package command
 
 class CommandService {
     fun extractCommand(string: String): Command {
-        val split = string.split(" ")
+        if (string.isEmpty()) throw IllegalArgumentException("empty command")
+        val split = string.trim().split(" ")
+        val commandName = split[0]
         val argsMap = split.subList(1, split.size).map {
-            val split1 = it.split("=")
-            return@map split1[0] to split1[1]
+            val arg = it.split("=")
+            val argName = arg[0].removePrefix("--")
+            val argVal = arg[1]
+            argName to argVal
         }.toList().associate { it.first to it.second }
-        return Command(split[0], argsMap)
+        return Command(commandName, argsMap)
     }
 
 }
