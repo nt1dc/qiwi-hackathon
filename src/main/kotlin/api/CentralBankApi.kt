@@ -10,10 +10,17 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 class CentralBankApi {
+    private var myFormat = SimpleDateFormat("dd/MM/yyyy")
+
+    private val cache: Map<Date, ValCurs> = mutableMapOf()
     fun loadValCurs(date: Date): ValCurs {
-        val serializer = Persister()
-        val fetchXmlData = fetchXmlData(date)
-        return serializer.read(ValCurs::class.java, fetchXmlData)
+        return if (cache.containsKey(date)) cache[date]!!
+        else {
+            val serializer = Persister()
+            val fetchXmlData = fetchXmlData(date)
+            serializer.read(ValCurs::class.java, fetchXmlData)
+
+        }
     }
 
     private fun fetchXmlData(date: Date): String {
@@ -38,7 +45,5 @@ class CentralBankApi {
             throw DataFetchingException()
         }
     }
-
-    private var myFormat = SimpleDateFormat("dd/MM/yyyy")
 
 }
