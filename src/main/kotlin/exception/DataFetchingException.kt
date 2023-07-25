@@ -1,4 +1,3 @@
 package exception
 
-class DataFetchingException() :RuntimeException(){
-}
+class DataFetchingException() :RuntimeException()
